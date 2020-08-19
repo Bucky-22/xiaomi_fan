@@ -44,7 +44,7 @@ MODEL_FAN_ZA1 = "zhimi.fan.za1"
 MODEL_FAN_ZA3 = "zhimi.fan.za3"
 MODEL_FAN_ZA4 = "zhimi.fan.za4"
 MODEL_FAN_P5 = "dmaker.fan.p5"
-MOEDL_FAN_1C = "dmaker.fan.1c"
+MODEL_FAN_P8 = "dmaker.fan.p8"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -123,7 +123,7 @@ AVAILABLE_ATTRIBUTES_FAN_P5 = {
     ATTR_RAW_SPEED: "speed",
 }
 
-AVAILABLE_ATTRIBUTES_FAN_1C = {
+AVAILABLE_ATTRIBUTES_FAN_P8 = {
     ATTR_MODE: "mode",
     ATTR_OSCILLATE: "oscillate",
     ATTR_DELAY_OFF_COUNTDOWN: "delay_off_countdown",
@@ -146,7 +146,7 @@ FAN_SPEED_LIST = {
     FAN_SPEED_LEVEL4: range(76, 101),
 }
 
-FAN_SPEED_LIST_1C = {
+FAN_SPEED_LIST_P8 = {
     SPEED_OFF: 0,
     FAN_SPEED_LEVEL1: 1,
     FAN_SPEED_LEVEL2: 2,
@@ -162,7 +162,7 @@ FAN_SPEED_VALUES = {
 }
 
 
-FAN_SPEED_VALUES_1C = {
+FAN_SPEED_VALUES_P8 = {
     SPEED_OFF: 0,
     FAN_SPEED_LEVEL1: 1,
     FAN_SPEED_LEVEL2: 2,
@@ -297,11 +297,11 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
 
         fan = FanP5(host, token, model=model)
         device = XiaomiFanP5(name, fan, model, unique_id, retries)
-    elif model == MOEDL_FAN_1C:
-        from .fan_1c import Fan1C
+    elif model == MODEL_FAN_P8:
+        from .fan_p8 import FanP8
         
-        fan = Fan1C(host, token)
-        device = XiaomiFan1C(name, fan, model, unique_id, retries)
+        fan = FanP8(host, token)
+        device = XiaomiFanp8(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
             "Unsupported device found! Please create an issue at "
@@ -697,14 +697,14 @@ class XiaomiFan(XiaomiGenericDevice):
         await self.async_set_speed(self._speed)
 
 
-class XiaomiFan1C(XiaomiFan):
+class XiaomiFanP8(XiaomiFan):
     def __init__(self, name, device, model, unique_id, retries):
         """Initialize the fan entity."""
         super().__init__(name, device, model, unique_id, retries)
 
         self._device_features = FEATURE_FLAGS_FAN
-        self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_1C
-        self._speed_list = list(FAN_SPEED_LIST_1C)
+        self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_P8
+        self._speed_list = list(FAN_SPEED_LIST_P8)
         self._speed = None
         self._oscillate = None
         self._natural_mode = False
@@ -733,7 +733,7 @@ class XiaomiFan1C(XiaomiFan):
             self._natural_mode = state.mode == OperationMode.Nature
             self._state = state.is_on
 
-            for level, speed in FAN_SPEED_LIST_1C.items():
+            for level, speed in FAN_SPEED_LIST_P8.items():
                 if state.speed == speed:
                     self._speed = level
                     self._state_attrs[ATTR_SPEED] = level
@@ -779,8 +779,8 @@ class XiaomiFan1C(XiaomiFan):
             return
 
         # Map speed level to speed
-        if speed in FAN_SPEED_VALUES_1C:
-            speed = FAN_SPEED_VALUES_1C[speed]
+        if speed in FAN_SPEED_VALUES_P8:
+            speed = FAN_SPEED_VALUES_P8[speed]
 
         await self._try_command(
             "Setting fan speed of the miio device failed.",
@@ -834,7 +834,7 @@ class XiaomiFanP5(XiaomiFan):
     async def async_update(self):
         """Fetch state from the device."""
         from miio import DeviceException
-        from .fan_1c import OperationMode
+        from .fan_P8 import OperationMode
 
         # On state change the device doesn't provide the new state immediately.
         if self._skip_update:

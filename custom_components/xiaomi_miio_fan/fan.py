@@ -44,7 +44,7 @@ MODEL_FAN_ZA1 = "zhimi.fan.za1"
 MODEL_FAN_ZA3 = "zhimi.fan.za3"
 MODEL_FAN_ZA4 = "zhimi.fan.za4"
 MODEL_FAN_P5 = "dmaker.fan.p5"
-MODEL_FAN_P8 = "dmaker.fan.p8"
+MOEDL_FAN_P8 = "dmaker.fan.p8"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -297,7 +297,7 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
 
         fan = FanP5(host, token, model=model)
         device = XiaomiFanP5(name, fan, model, unique_id, retries)
-    elif model == MODEL_FAN_P8:
+    elif model == MOEDL_FAN_P8:
         from .fan_p8 import FanP8
         
         fan = FanP8(host, token)
@@ -834,7 +834,7 @@ class XiaomiFanP5(XiaomiFan):
     async def async_update(self):
         """Fetch state from the device."""
         from miio import DeviceException
-        from .fan_P8 import OperationMode
+        from .fan_p8 import OperationMode
 
         # On state change the device doesn't provide the new state immediately.
         if self._skip_update:

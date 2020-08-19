@@ -301,7 +301,7 @@ async def async_setup_platform(hass, config, async_add_devices, discovery_info=N
         from .fan_p8 import FanP8
         
         fan = FanP8(host, token)
-        device = XiaomiFanp8(name, fan, model, unique_id, retries)
+        device = XiaomiFanP8(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
             "Unsupported device found! Please create an issue at "

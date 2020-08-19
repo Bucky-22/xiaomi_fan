@@ -23,8 +23,8 @@ _MAPPING = {
 #     Nature = "1"
 
 
-class FanStatus1C:
-    """Container for status reports from the Xiaomi Mi Smart Pedestal Fan DMaker 1C."""
+class FanStatusP8:
+    """Container for status reports from the Xiaomi Mi Smart Pedestal Fan DMaker P8."""
 
     def __init__(self, data: Dict[str, Any]) -> None:
         self.data = data
@@ -101,7 +101,7 @@ class FanStatus1C:
         return self.data
 
 
-class Fan1C(MiotDevice):
+class FanP8(MiotDevice):
     def __init__(
         self,
         ip: str = None,
@@ -131,7 +131,7 @@ class Fan1C(MiotDevice):
         for prop in self.get_properties_for_mapping():
             data[prop["did"]] = prop["value"] if prop["code"] == 0 else None
 
-        return FanStatus1C(data)
+        return FanStatusP8(data)
 
     @command(default_output=format_output("Powering on"))
     def on(self):
